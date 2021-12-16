@@ -10,8 +10,9 @@ let totalSeconds = 0;
 let expectedOutcome;
 let questionNumber = 0;
 let score = 0;
+let elapsedTime = '';
 
-mathsQuestions();
+setQuestion();
 
 
 function countTimer() {
@@ -28,12 +29,18 @@ function countTimer() {
     document.getElementById("time").textContent = hour + ":" + minute + ":" + seconds;
 }
 
-function mathsQuestions() {
+function setQuestion() {
     questionNumber++;
     let rightSide = Math.floor(Math.random() * 21);
     let leftSide = Math.floor(Math.random() * 21);
-    let operationList = ["+", "-", "x"];
-    let operatorSelection = Math.floor(Math.random() * 3);
+    let operationList = ["+", "-", "x", "/"];
+    let operatorSelection = Math.floor(Math.random() * 4);
+    let easyDivisors = [1, 2, 3, 4, 5, 6, 8, 10];
+
+    if (operationList[operatorSelection] == "/") {
+        leftSide = easyDivisors[Math.floor(Math.random() * 8)];
+        rightSide = leftSide * (Math.floor(Math.random() * 15));
+    }
 
     questionHeader.textContent = "Question " + questionNumber;
     question.textContent = rightSide + " " + operationList[operatorSelection] + " " + leftSide;
@@ -42,8 +49,10 @@ function mathsQuestions() {
         expectedOutcome = rightSide + leftSide;
     } else if (operationList[operatorSelection] == "-") {
         expectedOutcome = rightSide - leftSide;
-    } else {
+    } else if (operationList[operatorSelection] == "x") {
         expectedOutcome = rightSide * leftSide;
+    } else {
+        expectedOutcome = rightSide / leftSide;
     }
 
     console.log(expectedOutcome);
@@ -58,7 +67,10 @@ function checkAnswer(event) {
         }
         if (score < 20) {
             userAnswer.value = '';
-            mathsQuestions();
+            setQuestion();
+        } else {
+            clearInterval(timerVar);
+            elapsedTime = document.getElementById("time").textContent;
         }
     }
 }
