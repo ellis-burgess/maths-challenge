@@ -2,18 +2,27 @@ const questionHeader = document.getElementById("question-header");
 const question = document.getElementById("question");
 const userAnswer = document.getElementById("answer");
 const currentScore = document.getElementById("current-score");
+const resultDisplay = document.getElementById("results");
+const timeElapsedDisplay = document.getElementById("time-to-complete");
 
-userAnswer.addEventListener('keyup', checkAnswer);
-
-let timerVar = setInterval(countTimer, 1000);
+let timerVar;
 let totalSeconds = 0;
 let expectedOutcome;
 let questionNumber = 0;
 let score = 0;
-let elapsedTime = '';
+let incorrectAnswers = 0;
+let elapsedTime = "0";
+sessionStorage.setItem("correctAnswers", "0");
+sessionStorage.setItem("incorrectAnswers", "0");
 
-setQuestion();
-
+if (window.location.pathname == '/practice.html') {
+    userAnswer.addEventListener('keyup', checkAnswer);
+    setQuestion();
+    timerVar = setInterval(countTimer, 1000);
+    sessionStorage.setItem("elapsedTime", "0");
+} else if (window.location.pathname == '/results.html') {
+    displayResults();
+}
 
 function countTimer() {
     ++totalSeconds;
@@ -26,7 +35,8 @@ function countTimer() {
         minute = "0" + minute;
     if (seconds < 10)
         seconds = "0" + seconds;
-    document.getElementById("time").textContent = hour + ":" + minute + ":" + seconds;
+    elapsedTime = `${hour}:${minute}:${seconds}`;
+    document.getElementById("time").textContent = elapsedTime;
 }
 
 function setQuestion() {
@@ -64,13 +74,29 @@ function checkAnswer(event) {
         if (userAnswer.value == expectedOutcome) {
             score++;
             currentScore.textContent = score + "/20";
+        } else {
+            incorrectAnswers++;
         }
         if (score < 20) {
             userAnswer.value = '';
             setQuestion();
         } else {
             clearInterval(timerVar);
-            elapsedTime = document.getElementById("time").textContent;
+            sessionStorage.setItem("elapsedTime", elapsedTime);
+            window.location.href = '/results.html';
         }
     }
+}
+
+function displayResults() {
+    let incorrectAnswers = sessionStorage.getItem("incorrectAnswers");
+    if (incorrectAnswers == 0) {
+        resultDisplay.textContent = 'You answered 20 questions correctly with no mistakes!';
+    } else if (incorrectAnswers == 1) {
+        resultDisplay.textContent = 'You answered 20 questions correctly with 1 mistake.';
+    } else {
+        resultDisplay.textContent = 'You answered 20 questions correctly with ' + incorrectAnswers + ' mistakes.'
+    }
+
+    timeElapsedDisplay.textContent = sessionStorage.getItem("elapsedTime");
 }
