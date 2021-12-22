@@ -15,12 +15,12 @@ let elapsedTime = "0";
 sessionStorage.setItem("correctAnswers", "0");
 sessionStorage.setItem("incorrectAnswers", "0");
 
-if (window.location.pathname == '/practice.html') {
+if ((window.location.pathname == '/practice.html') || (window.location.pathname=='/maths-challenge/practice.html')) {
     userAnswer.addEventListener('keyup', checkAnswer);
     setQuestion();
     timerVar = setInterval(countTimer, 1000);
     sessionStorage.setItem("elapsedTime", "0");
-} else if (window.location.pathname == '/results.html') {
+} else if ((window.location.pathname == '/results.html') || (window.location.pathname == 'maths-challenge/results.html')) {
     displayResults();
 }
 
