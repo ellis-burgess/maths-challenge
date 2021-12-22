@@ -12,15 +12,17 @@ let questionNumber = 0;
 let score = 0;
 let incorrectAnswers = 0;
 let elapsedTime = "0";
+let practicePagePath = /practice/gm;
+let resultPagePath = /results/gm;
 sessionStorage.setItem("correctAnswers", "0");
 sessionStorage.setItem("incorrectAnswers", "0");
 
-if ((window.location.pathname == '/practice.html') || (window.location.pathname=='/maths-challenge/practice.html')) {
+if (practicePagePath.test(window.location.pathname)) {
     userAnswer.addEventListener('keyup', checkAnswer);
     setQuestion();
     timerVar = setInterval(countTimer, 1000);
     sessionStorage.setItem("elapsedTime", "0");
-} else if ((window.location.pathname == '/results.html') || (window.location.pathname == 'maths-challenge/results.html')) {
+} else if (resultPagePath.test(window.location.pathname)) {
     displayResults();
 }
 
@@ -83,7 +85,7 @@ function checkAnswer(event) {
         } else {
             clearInterval(timerVar);
             sessionStorage.setItem("elapsedTime", elapsedTime);
-            window.location.href = '/results.html';
+            window.location.replace('results.html');
         }
     }
 }
