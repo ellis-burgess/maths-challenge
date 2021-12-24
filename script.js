@@ -9,18 +9,18 @@ let timerVar;
 let totalSeconds = 0;
 let expectedOutcome;
 let questionNumber = 0;
+let elapsedTime = "0";
 let score = 0;
 let incorrectAnswers = 0;
-let elapsedTime = "0";
 let practicePagePath = /practice/gm;
 let resultPagePath = /results/gm;
 sessionStorage.setItem("correctAnswers", "0");
-sessionStorage.setItem("incorrectAnswers", "0");
 
 if (practicePagePath.test(window.location.pathname)) {
     userAnswer.addEventListener('keyup', checkAnswer);
     setQuestion();
     timerVar = setInterval(countTimer, 1000);
+    sessionStorage.setItem("incorrectAnswers", "0");
     sessionStorage.setItem("elapsedTime", "0");
 } else if (resultPagePath.test(window.location.pathname)) {
     displayResults();
@@ -84,6 +84,7 @@ function checkAnswer(event) {
             setQuestion();
         } else {
             clearInterval(timerVar);
+            sessionStorage.setItem("incorrectAnswers", incorrectAnswers);
             sessionStorage.setItem("elapsedTime", elapsedTime);
             window.location.replace('results.html');
         }
@@ -91,13 +92,13 @@ function checkAnswer(event) {
 }
 
 function displayResults() {
-    let incorrectAnswers = sessionStorage.getItem("incorrectAnswers");
-    if (incorrectAnswers == 0) {
+    let totalIncorrectAnswers = sessionStorage.getItem("incorrectAnswers");
+    if (totalIncorrectAnswers == 0) {
         resultDisplay.textContent = 'You answered 20 questions correctly with no mistakes!';
-    } else if (incorrectAnswers == 1) {
+    } else if (totalIncorrectAnswers == 1) {
         resultDisplay.textContent = 'You answered 20 questions correctly with 1 mistake.';
     } else {
-        resultDisplay.textContent = 'You answered 20 questions correctly with ' + incorrectAnswers + ' mistakes.'
+        resultDisplay.textContent = 'You answered 20 questions correctly with ' + totalIncorrectAnswers + ' mistakes.'
     }
 
     timeElapsedDisplay.textContent = sessionStorage.getItem("elapsedTime");
